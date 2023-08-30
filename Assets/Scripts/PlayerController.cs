@@ -12,7 +12,8 @@ public class PlayerController : MonoBehaviour
     private Vector2 input;
 
     // layers
-    //public LayerMask grassLayer;
+    public LayerMask solidObjectsLayer;
+    public LayerMask grassLayer;
 
     private void Update()
     {
@@ -30,7 +31,8 @@ public class PlayerController : MonoBehaviour
                 targetPos.x += input.x;
                 targetPos.y += input.y;
 
-                StartCoroutine(Move(targetPos));
+                if (IsWalkable(targetPos))
+                    StartCoroutine(Move(targetPos));
             }
             
         }
@@ -51,20 +53,28 @@ public class PlayerController : MonoBehaviour
 
         isMoving = false;
 
-        //CheckForEncounters();
+        CheckForEncounters();
     }
     
-    //private void CheckForEncounters()
-    //{
-        //if (Physics2D.OverlapCircle(transform.position, 0.2, grassLayer) != null)
-        //{
+    private void CheckForEncounters()
+    {
+        if (Physics2D.OverlapCircle(transform.position, 0.2f, grassLayer) != null)
+        {
             //chance of encounter 1 in 10
-            //if (Random.Range(1, 101) <= 10)
-            //{
+            if (Random.Range(1, 101) <= 10)
+            {
                 //Debug.Log("encountered a monster");
-            //}
-        //}
-    //}
+            }
+        }
+    }
+    private bool IsWalkable(Vector3 targetPos)
+    {
+        if (Physics2D.OverlapCircle(targetPos, 0.2f, solidObjectsLayer) != null)
+        {
+            return false;
+        }
 
+        return true;
+    }
 
 }
